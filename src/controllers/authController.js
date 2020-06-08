@@ -27,12 +27,32 @@ const correctPassword = async (candidatePassword, userPassword) =>
   await bcrypt.compare(candidatePassword, userPassword);
 
 exports.signup = catchError(async (req, res, next) => {
-  const { email, password, passwordConfirm } = req.body;
+  const {
+    email,
+    password,
+    passwordConfirm,
+    user_type,
+    names,
+    last_name,
+    address,
+    neighborhood,
+    mobile_phone,
+  } = req.body;
 
-  if (!email || !password || !passwordConfirm)
+  if (
+    !email ||
+    !password ||
+    !passwordConfirm ||
+    !names ||
+    !last_name ||
+    !address ||
+    !neighborhood ||
+    !mobile_phone ||
+    !user_type
+  )
     return next(
       new CustomError(
-        "You must provide email, password and passwordConfirm",
+        "You must provide email, password, passwordConfirm, names, last name, address, neighborhood, mobile phone and user type",
         400
       )
     );
@@ -40,29 +60,92 @@ exports.signup = catchError(async (req, res, next) => {
   const validEmail = validator.validateEmail(email);
   const validPassword = validator.validatePassword(password);
   const validConfirm = password === passwordConfirm;
+  const validNames = validator.validateName(names);
+  const validLastName = validator.validateName(last_name);
+  const validMobileNumber = validator.validateMobileNumber(mobile_phone);
 
-  if (validEmail && validPassword && validConfirm) {
-    const passwordEncripted = await bcrypt.hash(password, 12);
+  if (
+    validEmail &&
+    validPassword &&
+    validConfirm &&
+    validNames &&
+    validLastName &&
+    validMobileNumber
+  ) {
+    switch (user_type) {
+      case "client":
+        const passwordEncripted = await bcrypt.hash(password, 12);
 
-    const newUser = await User.create({
-      email: email,
-      password: passwordEncripted,
-    });
+        const newUser = await User.create({
+          email,
+          password: passwordEncripted,
+          names,
+          last_name,
+          address,
+          neighborhood,
+          mobile_phone,
+          user_type,
+        });
 
-    sendToken(newUser, 201, res);
+        sendToken(newUser, 201, res);
+        break;
+
+      case "shopkeeper":
+        const { market_name, service_capacity } = req.body;
+
+        if (!market_name || !service_capacity)
+          return next(
+            new CustomError(
+              "You must provide a market name and a service capacity",
+              400
+            )
+          );
+
+        const validMarketName = validator.validateName(market_name);
+
+        if (validMarketName) {
+          const passwordEncripted = await bcrypt.hash(password, 12);
+
+          const newUser = await User.create({
+            email,
+            password: passwordEncripted,
+            names,
+            last_name,
+            address,
+            neighborhood,
+            mobile_phone,
+            user_type,
+            market_name,
+            service_capacity,
+            market_state: "unauthorized",
+          });
+
+          sendToken(newUser, 201, res);
+        } else return next(new CustomError("Invalid market name", 400));
+        break;
+
+      default:
+        return next(
+          new CustomError("Users only can be clients or shopkeepers", 400)
+        );
+        break;
+    }
   } else {
     if (!validEmail) return next(new CustomError("Invalid email", 400));
-
-    if (!validPassword)
+    else if (!validPassword)
       return next(
         new CustomError(
           "Password must have eight characters, one number, one lowercase and one uppercase",
           400
         )
       );
-
-    if (!validConfirm)
+    else if (!validConfirm)
       return next(new CustomError("Passwords must match", 400));
+    else if (!validNames) return next(new CustomError("Invalid name", 400));
+    else if (!validLastName)
+      return next(new CustomError("Invalid last name", 400));
+    else if (!validMobileNumber)
+      return next(new CustomError("Invalid mobile number", 400));
   }
 });
 
@@ -121,3 +204,14 @@ exports.protect = catchError(async (req, res, next) => {
 
   next();
 });
+
+exports.restrictTo = (...types) => {
+  return (req, res, next) => {
+    if (!types.includes(req.user.user_type)) {
+      return next(
+        new AppError("You do not have permission to perform this action", 403)
+      );
+    }
+    next();
+  };
+};
