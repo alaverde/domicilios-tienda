@@ -8,6 +8,7 @@ const cors = require("cors");
 
 const userRouter = require("./routes/userRoutes");
 const authRouter = require("./routes/authRoutes");
+const productRouter = require("./routes/productRoutes");
 const errorHandler = require("./controllers/errorController");
 const CustomError = require("./utils/customError");
 
@@ -32,6 +33,7 @@ if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 //Routes
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/product", productRouter);
 app.all("*", (req, res, next) => next(new CustomError("Invalid route", 404)));
 
 //ErrorHandling
