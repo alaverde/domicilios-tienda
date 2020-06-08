@@ -26,7 +26,12 @@ exports.get = CatchError(async (req, res, next)=>{
 });
 
 exports.getList = CatchError(async (req, res, next)=>{
-    const products = await Product.find({userId: { $eq: req.user._id}});
+    const idUserMarket = req.body.id;
+    
+    if(!idUserMarket)
+        return next(new CustomError("You must provide user market id", 400));
+
+    const products = await Product.find({userId: { $eq: idUserMarket}});
 
     res.status(200).json(products);
 });
@@ -38,7 +43,7 @@ exports.update = CatchError(async (req, res, next)=>{
     if(!idProduct)
         return next(new CustomError("You must provide product id", 400));
     
-    if(!idProduct)
+    if(!product)
         return next(new CustomError("You must provide product obj to update", 400));
     
 
