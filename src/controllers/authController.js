@@ -209,7 +209,7 @@ exports.restrictTo = (...types) => {
   return (req, res, next) => {
     if (!types.includes(req.user.user_type)) {
       return next(
-        new AppError("You do not have permission to perform this action", 403)
+        new CustomError("You don't have permission to perform this action", 403)
       );
     }
     next();
