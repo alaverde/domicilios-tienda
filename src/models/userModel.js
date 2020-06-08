@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema({
   },
   market_name: {
     type: String,
+    required: false,
   },
   names: {
     type: String,
@@ -51,10 +52,24 @@ const userSchema = new mongoose.Schema({
     type: Number,
     min: [1, "The capacity must be at least 1"],
     max: [100, "The capacity must be less than 100"],
+    required: false,
   },
   market_state: {
     type: String,
     enum: ["unauthorized", "authorized"],
+    required: false,
+  },
+  passwordChangedAt: {
+    type: Date,
+    required: false,
+  },
+  passwordResetToken: {
+    type: String,
+    required: false,
+  },
+  passwordResetExpires: {
+    type: Date,
+    required: false,
   },
 });
 
