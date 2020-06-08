@@ -272,34 +272,46 @@ exports.forgotPassword = catchError(async (req, res, next) => {
 
   const resetURL = `${req.protocol}://${req.get(
     "host"
-  )}/api/v1/users/resetPassword/${resetToken}`;
+  )}/api/auth/resetPassword/${resetToken}`;
 
   const message = `Forgot password? submit PATCH request with your new password and passwordConfirm to ${resetURL}. If you don't forget your password, ignore this email.`;
 
   await sendResetToken(user, message, res, next);
 });
 
-// exports.resetPassword = catchAsync(async (req, res, next) => {
-//   //1) Get user based on the token
-//   const hashedToken = crypto
-//     .createHash("sha256")
-//     .update(req.params.token)
-//     .digest("hex");
+exports.resetPassword = catchError(async (req, res, next) => {
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
 
-//   const user = await User.findOne({
-//     passwordResetToken: hashedToken,
-//     passwordResetExpires: { $gt: Date.now() },
-//   });
-//   // 2) if token has no expire and there is user, set new password
-//   if (!user) {
-//     return next(new AppError("Token is invalid or has expired", 400));
-//   }
-//   user.password = req.body.password;
-//   user.passwordConfirm = req.body.passwordConfirm;
-//   user.passwordResetToken = undefined;
-//   user.passwordResetExpires = undefined;
-//   await user.save();
-//   // 3) update changePasswordAt property of user
-//   // 4) log the user in send JWT
-//   createSendToken(user, 200, res);
-// });
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  if (!user)
+    return next(new CustomError("Token is invalid or has expired", 400));
+
+  const { password, passwordConfirm } = req.body;
+
+  const validPassword = validator.validatePassword(password);
+  const validConfirm = password === passwordConfirm;
+
+  if (validPassword && validConfirm) {
+    const passwordEncripted = await bcrypt.hash(password, 12);
+    user.password = passwordEncripted;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+
+    sendToken(user, 200, res);
+  } else {
+    return next(
+      new CustomError(
+        "Password must have eight characters, one number, one lowercase and one uppercase and have to be confirm",
+        400
+      )
+    );
+  }
+});

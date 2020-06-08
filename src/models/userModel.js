@@ -59,10 +59,6 @@ const userSchema = new mongoose.Schema({
     enum: ["unauthorized", "authorized"],
     required: false,
   },
-  passwordChangedAt: {
-    type: Date,
-    required: false,
-  },
   passwordResetToken: {
     type: String,
     required: false,
