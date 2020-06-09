@@ -1,17 +1,17 @@
 const express = require("express");
 
-const authController = require("../controllers/authController");
+const protectRoute = require("../middlewares/protectRoutes");
 const userController = require("../controllers/userController");
 
 //Setup
 const router = express.Router();
 
 //Rutas
-router.use(authController.protect);
+router.use(protectRoute.verifyToken);
 
 router.get(
   "/me",
-  authController.restrictTo("admin", "shopkeeper"),
+  protectRoute.restrictTo("admin", "shopkeeper"),
   userController.getMe
 );
 

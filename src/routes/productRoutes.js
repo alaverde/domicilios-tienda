@@ -1,10 +1,10 @@
 const express = require("express");
 
-const authController = require('../controllers/authController');
-const productController = require('../controllers/productController');
+const productController = require("../controllers/productController");
+const protectRoute = require("../middlewares/protectRoutes");
 
 const router = express.Router();
-router.use(authController.protect);
+router.use(protectRoute.verifyToken);
 router.post("/add", productController.add);
 router.get("/get", productController.get);
 router.get("/getList", productController.getList);
