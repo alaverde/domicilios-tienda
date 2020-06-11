@@ -87,6 +87,26 @@ exports.validateInputs = (...inputs) => (req, res, next) => {
         if (!validateAlphanumeric(input))
           return next(new CustomError("Invalid id", 400));
         break;
+      case "orders":
+        let idProducts = [];
+        let orderQuantity = [];
+        for (order of input){
+          if(!validateAlphanumeric(order.idProduct) || !validateOnlyNumbers(order.quantity))
+            return next(new CustomError("The order must be alphanumeric and the quantity only a number", 400));
+          if(idProducts.indexOf(order.idProduct)>=0)
+            return next(new CustomError("You cannot repeat the same product two or more times", 400));
+          idProducts.push(order.idProduct);
+          orderQuantity.push(order.quantity);
+        }
+        req.orders = {
+          idProducts,
+          orderQuantity
+        }
+        break;
+      case "idOrder":
+        if (!validateAlphanumeric(input))
+          return next(new CustomError("Invalid id", 400));
+        break;
     }
   }
   next();

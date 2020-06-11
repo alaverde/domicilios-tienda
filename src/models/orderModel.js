@@ -24,6 +24,20 @@ const orderSchema = new mongoose.Schema({
     default: "created",
     required: [true, "You must provide the state of the order"],
   },
+  orders:{
+    type:[{ 
+      order: {
+      type:mongoose.Schema.ObjectId, 
+      ref:'product',
+      required: [true, 'You must provide the order']
+      },
+      quantity: {
+        type:Number,
+        required: [true, "You must provide the quantity"]
+      } 
+    }],
+    required: [true,"You must provide the orders"]
+  },
   total_price: {
     type: Number,
     required: [true, "You must provide the total price"],

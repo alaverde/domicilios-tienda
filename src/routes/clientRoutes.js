@@ -1,25 +1,32 @@
 const express = require("express");
 
 const protectRoute = require("../middlewares/protectRoutes");
-const userController = require("../controllers/clientController");
+const clientController = require("../controllers/clientController");
 const validator = require("../middlewares/validator");
 
 //Setup
 const router = express.Router();
 
-//Rutas
+//Routes
 router.use(protectRoute.verifyToken);
 router.use(protectRoute.restrictTo("client"));
 
 router.get(
   "/shops",
   validator.validateInputs("neighborhood"),
-  userController.getShops
+  clientController.getShops
 );
+
 router.get(
   "/products",
   validator.validateInputs("idTienda"),
-  userController.getProducts
+  clientController.getProducts
 );
+
+router.post("/order", validator.validateInputs("orders"), clientController.makeOrders);
+
+router.get("/orders/me", clientController.getOrders);
+
+router.post("/cancelorder",validator.validateInputs("idOrder"), clientController.cancelOrder);
 
 module.exports = router;
