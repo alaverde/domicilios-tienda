@@ -74,11 +74,18 @@ exports.validateInputs = (...inputs) => (req, res, next) => {
         break;
 
       case "neighborhood":
+        if (!validateNames(input))
+          return next(new CustomError("Invalid neighborhood", 400));
         break;
 
       case "mobile_phone":
         if (!validateMobileNumber(input))
           return next(new CustomError("Invalid mobile number", 400));
+        break;
+
+      case "idTienda":
+        if (!validateAlphanumeric(input))
+          return next(new CustomError("Invalid id", 400));
         break;
     }
   }
@@ -110,4 +117,9 @@ const validateMobileNumber = (number) => {
 const validateOnlyNumbers = (number) => {
   let r = new RegExp(/^[0-9]+$/);
   return r.test(number);
+};
+
+const validateAlphanumeric = (text) => {
+  let r = new RegExp(/^[a-zA-Z0-9]+$/);
+  return r.test(text);
 };

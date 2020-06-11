@@ -6,7 +6,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const cors = require("cors");
 
-const userRouter = require("./routes/userRoutes");
+const clientRouter = require("./routes/clientRoutes");
 const authRouter = require("./routes/authRoutes");
 const productRouter = require("./routes/productRoutes");
 const errorHandler = require("./controllers/errorController");
@@ -32,7 +32,7 @@ if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 
 //Routes
 app.use("/api/auth", authRouter);
-app.use("/api/user", userRouter);
+app.use("/api/user", clientRouter);
 app.use("/api/product", productRouter);
 app.all("*", (req, res, next) => next(new CustomError("Invalid route", 404)));
 
