@@ -2,39 +2,34 @@ const express = require("express");
 
 const authController = require("../controllers/authController");
 const validator = require("../middlewares/validator");
+const authValidator = require("../middlewares/authValidator");
 
 //Setup
 const router = express.Router();
 
-//Rutas
+//Routes
 router.post(
   "/signup",
-  validator.validateInputs(
-    "email",
-    "password",
-    "passwordConfirm",
-    "user_type",
-    "names",
-    "last_name",
-    "address",
-    "neighborhood",
-    "mobile_phone"
-  ),
+  authValidator.validatorSignUp(),
+  validator.checkResult,
   authController.signup
 );
 router.post(
   "/login",
-  validator.validateInputs("email", "password"),
+  authValidator.validatorLogin(),
+  validator.checkResult,
   authController.login
 );
 router.post(
   "/forgotpassword",
-  validator.validateInputs("email"),
+  authValidator.validatorForgotPassword(),
+  validator.checkResult,
   authController.forgotPassword
 );
 router.post(
   "/resetPassword/:token",
-  validator.validateInputs("password", "passwordConfirm"),
+  authValidator.validatorResetPassword(),
+  validator.checkResult,
   authController.resetPassword
 );
 

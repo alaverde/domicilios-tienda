@@ -1,7 +1,7 @@
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
-    error: err,
+    errors: err.errors,
     message: err.message,
     stack: err.stack,
   });

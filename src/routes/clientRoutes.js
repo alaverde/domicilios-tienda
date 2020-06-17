@@ -3,6 +3,7 @@ const express = require("express");
 const protectRoute = require("../middlewares/protectRoutes");
 const clientController = require("../controllers/clientController");
 const validator = require("../middlewares/validator");
+const clientValidator = require("../middlewares/clientValidator");
 
 //Setup
 const router = express.Router();
@@ -13,20 +14,29 @@ router.use(protectRoute.restrictTo("client"));
 
 router.get(
   "/shops",
-  validator.validateInputs("neighborhood"),
   clientController.getShops
 );
 
 router.get(
   "/products",
-  validator.validateInputs("idTienda"),
+  clientValidator.getProductsValidator(),
+  validator.checkResult,
   clientController.getProducts
 );
 
-router.post("/order", validator.validateInputs("orders"), clientController.makeOrders);
+router.post(
+  "/order", 
+  clientValidator.createOrdersValidator,
+  clientController.makeOrders);
 
-router.get("/orders/me", clientController.getOrders);
+router.get(
+  "/orders/me", 
+  clientController.getOrders);
 
-router.post("/cancelorder",validator.validateInputs("idOrder"), clientController.cancelOrder);
+router.post(
+  "/cancelorder",
+  clientValidator.cancelOrderValidator(),
+  validator.checkResult,
+  clientController.cancelOrder);
 
 module.exports = router;
