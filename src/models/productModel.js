@@ -20,11 +20,12 @@ const productSchema = new mongoose.Schema({
   unitPrice: {
     type: Number,
     required: [true, "Provide product unit price"],
+    min: 1,
   },
   quantity: {
     type: Number,
     required: [true, "Provide product quantity"],
-    min: 0,
+    min: 1,
   },
 });
 
