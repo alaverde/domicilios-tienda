@@ -17,9 +17,6 @@ exports.add = CatchError(async (req, res, next) => {
 exports.get = CatchError(async (req, res, next) => {
   const idProduct = req.body.id;
 
-  if (!idProduct)
-    return next(new CustomError("You must provide product id", 400));
-
   const product = await Product.findById(idProduct);
 
   res.status(200).json(product);
@@ -28,25 +25,15 @@ exports.get = CatchError(async (req, res, next) => {
 exports.getList = CatchError(async (req, res, next) => {
   const idUserMarket = req.body.id;
 
-  if (!idUserMarket)
-    return next(new CustomError("You must provide user market id", 400));
-
   const products = await Product.find({ userId: { $eq: idUserMarket } });
 
   res.status(200).json(products);
 });
 
 exports.update = CatchError(async (req, res, next) => {
-  const idProduct = req.body.id;
-  const product = req.body.product;
+  const product = req.body;
 
-  if (!idProduct)
-    return next(new CustomError("You must provide product id", 400));
-
-  if (!product)
-    return next(new CustomError("You must provide product obj to update", 400));
-
-  const updateProduct = await Product.findByIdAndUpdate(idProduct, product);
+  const updateProduct = await Product.findByIdAndUpdate(product.id, product);
 
   res.status(200).json({
     result: true,
@@ -56,9 +43,6 @@ exports.update = CatchError(async (req, res, next) => {
 
 exports.delete = CatchError(async (req, res, next) => {
   const idProduct = req.body.id;
-
-  if (!idProduct)
-    return next(new CustomError("You must provide product id", 400));
 
   const deleteProduct = await Product.findByIdAndDelete(idProduct);
 
