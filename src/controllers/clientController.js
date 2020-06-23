@@ -1,7 +1,7 @@
 const User = require("../models/userModel");
 const Product = require("../models/productModel");
 const CatchError = require("../utils/catchError");
-const CustomError = require("../utils/customError");
+const {CustomError} = require("../utils/customError");
 const Orders = require("../models/orderModel");
 
 exports.getShops = CatchError(async (req, res, next) => {
@@ -51,13 +51,18 @@ exports.makeOrders = CatchError(async (req, res, next) => {
     for(let i=0;i<products.length;i++){
       //Check if the quantity is available
       if(products[i].quantity<orderQuantity[i]){
-        res.status(400).json({
-          message:`The quantity requested for ${products[i].name} is not available`
-        })
-        return
+        const err=`The quantity requested for ${products[i].name} is not available`;
+        console.log(err);
+        return next(new CustomError(err));
       }
+        // {
+      //   res.status(400).json({
+      //     message:`The quantity requested for ${products[i].name} is not available`
+      //   })
+      //   return
+      // }
       
-      // return next(new CustomError(`The quantity requested for ${products[i].name} is not available`,400));
+
 
       //Create a key for the map with the Id of the shop
       let key = products[i].userId.toString();

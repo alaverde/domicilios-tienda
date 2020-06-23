@@ -19,5 +19,4 @@ class CustomErrorJson extends Error {
   }
 }
 
-module.exports = CustomError;
-module.exports = CustomErrorJson;
+module.exports = {CustomError,CustomErrorJson};
