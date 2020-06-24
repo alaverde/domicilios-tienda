@@ -1,6 +1,5 @@
 const Product = require("../models/productModel");
 const CatchError = require("../utils/catchError");
-const CustomError = require("../utils/customError");
 
 exports.add = CatchError(async (req, res, next) => {
   const product = req.body;

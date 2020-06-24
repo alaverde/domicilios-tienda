@@ -1,14 +1,4 @@
-const CustomErrorJson = require("../utils/customError");
-const { body } = require("express-validator");
+const validator = require("../middlewares/validator");
 
-exports.validationMarketId= [
-    body("id")
-        .trim()
-        .stripLow()
-        .escape()
-        .exists()
-        .withMessage("You must provide market's id")
-        .notEmpty()
-        .withMessage("You must provide market's id")
-];
-
+exports.validationMarketId = 
+    validator.idValidator("id", "of market");

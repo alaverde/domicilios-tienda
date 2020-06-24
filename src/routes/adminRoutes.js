@@ -14,8 +14,8 @@ router.use(protectRoute.restrictTo("admin"));
 
 router.get("/markets", adminController.getMarkets);
 router.get("/marketsAuthRemain", adminController.getAutorizationRemaingingMarkets);
-router.post("/authorize", adminValidator.validationMarketId, validator.checkResult,  adminController.authorize);
-router.post("/override", adminValidator.validationMarketId, validator.checkResult,  adminController.override);
-router.post("/deleteProduct", productValidator.validationId, validator.checkResult,  productController.delete);
+router.post("/authorize", [adminValidator.validationMarketId, validator.checkResult],  adminController.authorize);
+router.post("/override", [adminValidator.validationMarketId, validator.checkResult],  adminController.override);
+router.post("/deleteProduct", [productValidator.validationId, validator.checkResult],  productController.delete);
 
 module.exports = router;

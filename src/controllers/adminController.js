@@ -1,7 +1,5 @@
-const Product = require("../models/productModel");
 const User = require("../models/userModel");
 const CatchError = require("../utils/catchError");
-const CustomError = require("../utils/customError");
 
 exports.getMarkets = CatchError(async (req, res, next) => {
   
