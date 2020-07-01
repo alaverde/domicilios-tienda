@@ -8,7 +8,9 @@ const CustomError = require("../utils/customError");
 const sendEmail = require("../utils/sendEmail");
 
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_KEY, {
+  return jwt.sign({
+    id
+  }, process.env.JWT_KEY, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
@@ -19,7 +21,6 @@ const sendToken = (user, statusCode, res) => {
   res.status(statusCode).json({
     status: "success",
     token,
-    user,
   });
 };
 
@@ -53,7 +54,9 @@ const sendEmailWithResetToken = async (user, message, res, next) => {
   } catch (err) {
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
-    await user.save({ validateBeforeSave: false });
+    await user.save({
+      validateBeforeSave: false
+    });
 
     return next(
       new CustomError(
@@ -93,7 +96,9 @@ exports.signup = catchError(async (req, res, next) => {
       break;
 
     case "shopkeeper":
-      const { market_name, service_capacity } = req.body;
+      const {
+        market_name, service_capacity
+      } = req.body;
       newUser = await User.create({
         email,
         password: passwordEncripted,
@@ -113,8 +118,13 @@ exports.signup = catchError(async (req, res, next) => {
 });
 
 exports.login = catchError(async (req, res, next) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email }).select("+password");
+  const {
+    email,
+    password
+  } = req.body;
+  const user = await User.findOne({
+    email
+  }).select("+password");
 
   if (!user || !(await comparePasswords(password, user.password)))
     return next(new CustomError("User don't found with this credentials", 400));
@@ -122,7 +132,7 @@ exports.login = catchError(async (req, res, next) => {
   sendToken(user, 200, res);
 });
 
-exports.removeUser = catchError(async(req, res, next) => {
+exports.removeUser = catchError(async (req, res, next) => {
   const idUser = req.body.id;
 
   const removedUser = await User.findByIdAndDelete(idUser);
@@ -134,7 +144,9 @@ exports.removeUser = catchError(async(req, res, next) => {
 });
 
 exports.forgotPassword = catchError(async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email });
+  const user = await User.findOne({
+    email: req.body.email
+  });
 
   if (!user)
     return next(
@@ -142,7 +154,9 @@ exports.forgotPassword = catchError(async (req, res, next) => {
     );
 
   const resetToken = createResetToken(user);
-  await user.save({ validateBeforeSave: false });
+  await user.save({
+    validateBeforeSave: false
+  });
 
   const resetURL = `${req.protocol}://${req.get(
     "host"
@@ -161,7 +175,9 @@ exports.resetPassword = catchError(async (req, res, next) => {
 
   const user = await User.findOne({
     passwordResetToken: hashedToken,
-    passwordResetExpires: { $gt: Date.now() },
+    passwordResetExpires: {
+      $gt: Date.now()
+    },
   });
 
   if (!user)
