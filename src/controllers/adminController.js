@@ -10,6 +10,15 @@ exports.getMarkets = CatchError(async (req, res, next) => {
   });
 });
 
+exports.getUsers = CatchError(async (req, res, next) => {
+  
+  const users = await User.find();
+
+  res.status(200).json({
+    users
+  });
+});
+
 exports.getAutorizationRemaingingMarkets = CatchError(async (req, res, next) => {
   
   const markets = await User.find({

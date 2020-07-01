@@ -1,4 +1,5 @@
 const { body, param } = require("express-validator");
+const validator = require("../middlewares/validator");
 
 exports.validatorLogin = ()=>[emailValidator,
     passwordValidator];
@@ -20,6 +21,10 @@ exports.validatorForgotPassword = () => [emailValidator];
 exports.validatorResetPassword = () => [passwordValidator,
   passwordConfirmValidator,
   resetTokenValidator];
+
+
+exports.validationId = 
+  validator.idValidator("id", "of user");
 
 const emailValidator = body("email")
 .notEmpty()
@@ -107,4 +112,4 @@ const serviceCapacityValidator = body("service_capacity")
 .isInt()
 .withMessage("The service capacity must be an integer")
 .custom((value)=> value=>1 && value<=100)
-.withMessage("The service capacity must be a number between 1 and 100")
+.withMessage("The service capacity must be a number between 1 and 100");
