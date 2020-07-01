@@ -24,6 +24,8 @@ exports.existsValidator = (fieldName, extraMessage = "") => {
     .withMessage(`You must provide ${fieldName} ${extraMessage}`)
     .notEmpty()
     .withMessage(`You must provide ${fieldName} ${extraMessage}`)
+    .isMongoId()
+    .withMessage(`Invalid ${fieldName} ${extraMessage}`);
 }
 
 exports.numericValidator = (fieldName) => {
