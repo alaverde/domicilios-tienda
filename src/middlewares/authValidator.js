@@ -123,5 +123,5 @@ const serviceCapacityValidator = body("service_capacity")
   .bail()
   .isInt()
   .withMessage("The service capacity must be an integer")
-  .custom((value) => value => 1 && value <= 100)
-  .withMessage("The service capacity must be a number between 1 and 100");
+  .custom((value) => value => 10 && value <= 100)
+  .withMessage("The service capacity must be a number between 10 and 100");

@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema({
   },
   service_capacity: {
     type: Number,
-    min: [1, "The capacity must be at least 1"],
+    min: [10, "The capacity must be at least 1"],
     max: [100, "The capacity must be less than 100"],
     required: false,
   },
