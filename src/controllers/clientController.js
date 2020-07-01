@@ -27,6 +27,14 @@ exports.getProducts = CatchError(async (req, res, next) => {
     idTienda
   } = req.body;
 
+  const tienda = await User.findById(idTienda);
+
+  if (!tienda)
+    return next(new CustomError("Shop don't found", 400));
+
+  if (tienda.user_type !== "shopkeeper")
+    return next(new CustomError("The ID does not belong to a shopkeeper", 400));
+
   let products = await Product.find({
     userId: {
       $eq: idTienda

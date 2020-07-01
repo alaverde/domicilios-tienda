@@ -1,6 +1,8 @@
 const dotenv = require("dotenv");
 
-dotenv.config({ path: "./config/config.env" });
+dotenv.config({
+  path: "./config/config.env"
+});
 
 const app = require("./src/app");
 const mongoAdapter = require("./config/mongoAdapter");

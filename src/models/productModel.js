@@ -10,8 +10,7 @@ const productSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Provide product name"],
-    maxlength: [100, "Name exceed max Length 100 characters"],
-    unique: true,
+    maxlength: [100, "Name exceed max Length 100 characters"]
   },
   image: {
     type: String,

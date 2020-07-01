@@ -1,12 +1,16 @@
-const { body } = require("express-validator");
+const {
+  body
+} = require("express-validator");
 const CustomErrorJson = require("../utils/customErrorJson");
-const { validationResult } = require("express-validator");
+const {
+  validationResult
+} = require("express-validator");
 
-exports.checkResult = (req, res, next) =>{
+exports.checkResult = (req, res, next) => {
   const result = validationResult(req);
 
-  if(!result.isEmpty())
-      return next(new CustomErrorJson("Some errors encountered", result.errors, 400));
+  if (!result.isEmpty())
+    return next(new CustomErrorJson("Some errors encountered", result.errors, 400));
 
   next();
 };
@@ -23,9 +27,7 @@ exports.existsValidator = (fieldName, extraMessage = "") => {
     .exists()
     .withMessage(`You must provide ${fieldName} ${extraMessage}`)
     .notEmpty()
-    .withMessage(`You must provide ${fieldName} ${extraMessage}`)
-    .isMongoId()
-    .withMessage(`Invalid ${fieldName} ${extraMessage}`);
+    .withMessage(`You must provide ${fieldName} ${extraMessage}`);
 }
 
 exports.numericValidator = (fieldName) => {
@@ -34,9 +36,9 @@ exports.numericValidator = (fieldName) => {
     .withMessage(`${fieldName} must be numeric`);
 }
 
-exports.zeroNegativeValidator = (value)=> {
-  if(value <= 0)
-      return Promise.reject("");
+exports.zeroNegativeValidator = (value) => {
+  if (value <= 0)
+    return Promise.reject("");
 
   return value;
 }
